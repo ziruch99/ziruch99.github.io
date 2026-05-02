@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AutoResearch Meets Real-World Data-Driven Discovery</title>
+    <meta
+      name="description"
+      content="When a data-driven discovery task is well-defined as an optimization problem with a reliable verifier, AutoResearch can turn coding agents into powerful research assistants."
+    />
+    <meta
+      property="og:title"
+      content="AutoResearch Meets Real-World Data-Driven Discovery"
+    />
+    <meta
+      property="og:description"
+      content="When a data-driven discovery task is well-defined as an optimization problem with a reliable verifier, AutoResearch can turn coding agents into powerful research assistants."
+    />
+    <meta property="og:type" content="article" />
+    <meta
+      name="author"
+      content="Ziru Chen, Hanane Nour Moussa, Yifei Li, Huan Sun"
+    />
+    <style>
+      :root {
+        --text: #333;
+        --heading: #222;
+        --muted: #666;
+        --link: #267cb9;
+        --border: #e5e5e5;
+        --soft: #f7f7f7;
+        --code-bg: #f6f8fa;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        padding: 40px 16px 56px;
+        background: #fff;
+        color: var(--text);
+        font:
+          15px/1.58 -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Helvetica,
+          Arial,
+          sans-serif;
+        text-rendering: optimizeLegibility;
+      }
+
+      main {
+        max-width: 860px;
+        margin: 0 auto;
+      }
+
+      article {
+        max-width: 760px;
+        margin: 0 auto;
+      }
+
+      .site-nav {
+        margin: 0 0 24px;
+        font-size: 14px;
+      }
+
+      .site-nav a {
+        color: var(--link);
+        text-decoration: none;
+      }
+
+      .site-nav a:hover {
+        text-decoration: underline;
+      }
+
+      header {
+        margin-bottom: 24px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      h1,
+      h2,
+      h3 {
+        color: var(--heading);
+        line-height: 1.25;
+        font-weight: 600;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: 28px;
+      }
+
+      h2 {
+        margin: 2.2em 0 0.75em;
+        padding-bottom: 0.2em;
+        border-bottom: 1px solid var(--border);
+        font-size: 21px;
+      }
+
+      h3 {
+        margin: 1.7em 0 0.65em;
+        font-size: 17px;
+      }
+
+      p {
+        margin: 0 0 1em;
+      }
+
+      .meta {
+        color: var(--muted);
+        margin-bottom: 1em;
+      }
+
+      a {
+        color: var(--link);
+        text-decoration: none;
+      }
+
+      a:hover,
+      a:focus {
+        text-decoration: underline;
+      }
+
+      ul,
+      ol {
+        margin: 0 0 1em;
+        padding-left: 1.5em;
+      }
+
+      li {
+        margin: 0.25em 0;
+      }
+
+      li > ul,
+      li > ol {
+        margin-top: 0.3em;
+        margin-bottom: 0.4em;
+      }
+
+      blockquote {
+        margin: 1.1em 0 1.25em;
+        padding: 0.75em 1em;
+        color: #555;
+        background: var(--soft);
+        border-left: 4px solid var(--border);
+      }
+
+      figure {
+        margin: 1.4em 0 1.7em;
+        text-align: center;
+      }
+
+      figure img {
+        display: block;
+        max-width: 100%;
+        height: auto;
+        margin: 0 auto;
+        border: 1px solid var(--border);
+      }
+
+      figcaption {
+        margin-top: 0.45em;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      code,
+      pre {
+        font-family:
+          ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono",
+          monospace;
+        font-size: 13px;
+      }
+
+      code {
+        padding: 0.12em 0.3em;
+        background: var(--code-bg);
+        border-radius: 3px;
+      }
+
+      pre {
+        overflow-x: auto;
+        margin: 1em 0 1.25em;
+        padding: 0.9em 1em;
+        background: var(--code-bg);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        line-height: 1.45;
+      }
+
+      pre code {
+        display: block;
+        padding: 0;
+        background: transparent;
+        border-radius: 0;
+        white-space: pre;
+      }
+
+      .math {
+        margin: 1.25em 0;
+        overflow-x: auto;
+        text-align: center;
+      }
+
+      .callout {
+        display: flex;
+        gap: 0.75em;
+        margin: 1.2em 0 1.4em;
+        padding: 0.85em 1em;
+        background: var(--soft);
+        border-left: 4px solid var(--border);
+      }
+
+      .callout p {
+        margin: 0;
+      }
+
+      .callout-icon {
+        flex: 0 0 auto;
+        line-height: 1.2;
+      }
+
+      .underline {
+        border-bottom: 1px solid currentColor;
+      }
+
+      @media (max-width: 720px) {
+        body {
+          padding: 24px 14px 40px;
+          font-size: 14px;
+        }
+
+        h1 {
+          font-size: 24px;
+        }
+
+        h2 {
+          font-size: 19px;
+        }
+      }
+
+      /* Click-to-enlarge figures */
+      figure img {
+        cursor: zoom-in;
+      }
+
+      .image-lightbox {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 32px;
+        background: rgba(0, 0, 0, 0.78);
+      }
+
+      .image-lightbox.open {
+        display: flex;
+      }
+
+      .image-lightbox img {
+        max-width: min(1100px, 95vw);
+        max-height: 90vh;
+        border-radius: 6px;
+        background: white;
+        cursor: zoom-out;
+      }
+
+      .image-lightbox-caption {
+        position: fixed;
+        left: 50%;
+        bottom: 24px;
+        transform: translateX(-50%);
+        max-width: min(900px, 90vw);
+        color: white;
+        font-size: 14px;
+        text-align: center;
+      }
+    </style>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]],
+        },
+      };
+    </script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+    ></script>
+  </head>
+  <body>
+    <main>
+      <nav class="site-nav"><a href="index.html">← Ziru Chen</a></nav>
+      <article>
+        <header>
+          <h1>AutoResearch Meets Real-World Data-Driven Discovery</h1>
+        </header>
+
+        <p class="meta">
+          <strong
+            >Addendum to Paper “<a href="https://arxiv.org/abs/2604.27977"
+              >D3-Gym: Constructing Real-World Verifiable Environments for
+              Data-Driven Discovery</a
+            >”</strong
+          >
+        </p>
+        <p class="meta">
+          <strong>Authors</strong>: Ziru Chen, Hanane Nour Moussa, Yifei Li,
+          Huan Sun
+        </p>
+        <blockquote>
+          <strong>TLDR</strong>: When a data-driven discovery task is
+          well-defined as an optimization problem with a reliable verifier to
+          evaluate the optimization objective, we show that the simple
+          AutoResearch loop turns coding agents into powerful research
+          assistants.
+        </blockquote>
+        <h2 id="1-background">1 Background</h2>
+        <p>
+          In March, Andrej Karpathy introduced
+          <a href="https://github.com/karpathy/autoresearch">AutoResearch</a>, a
+          minimalist harness for coding agents to execute repeatable tasks
+          autonomously in a verifiable environment. As an initial example, he
+          implemented the harness to run Claude Code for language model (LM)
+          training. Specifically, the harness includes:
+        </p>
+        <ul>
+          <li>
+            A <code>program.md</code> file with instructions for the agent to
+            perform the task and rules to prevent unintended behaviors, e.g.,
+            reward hacking by changing the evaluation script.
+          </li>
+          <li>
+            A <code>prepare.py</code> file that downloads and tokenizes the text
+            corpora, as well as defining the evaluation procedure.
+          </li>
+          <li>
+            A <code>train.py</code> file that contains the training loop, a
+            small transformer LM architecture, and a customized optimizer, all
+            of which to be improved by the agent.
+          </li>
+        </ul>
+        <p>
+          After setting up, the agent runs a closed loop autonomously to improve
+          the training script and achieve lower Bits-Per-Byte (a normalized
+          cross entropy loss) on the next-token prediction task. Each iteration
+          of the loop is constrained to finish training within 5 minutes on one
+          GPU, thus enabling efficient trial-and-error.
+        </p>
+        <p>
+          Albeit simple, this closed loop formulation of AutoResearch is
+          applicable to many real-world problems beyond LM training.
+          Particularly, it is ideal for solving optimization problems, which
+          widely exists in scientific research and daily life. For instance, in
+          artificial intelligence, we aim to maximize model performance given
+          the same computation resources, while in travel planning, we want to
+          minimize our budget when enjoying the trip. More formally, these
+          problems share a common mathematical formulation:
+        </p>
+        <div class="math">\[\text{argmax}_{\theta} J(\theta)\]</div>
+        <p>
+          where \(J\) is the optimization objective and \(\theta\) is a vector
+          of variables.
+        </p>
+        <p>
+          This definition makes AutoResearch naturally applicable to almost all
+          optimization problems across various disciplines. Although finding the
+          best \(\theta\) is an open-ended task that requires strategically
+          searching through a vast solution space, the optimization objective
+          \(J\) makes the open-ended task verifiable, where the agent can
+          iteratively evaluate and improve its solution against the objective.
+          When \(J\) can be implemented as a program, a coding agent with
+          AutoResearch harness can, in principle, run the closed search loop
+          24/7 and keep improving its solution toward the global optima.
+        </p>
+        <p>
+          This paradigm shift also brings new light to utilize coding agents for
+          data-driven discovery (<a
+            href="https://openreview.net/forum?id=6z4YKr0GK6"
+            >Chen et al., 2025</a
+          >;
+          <a href="https://openreview.net/forum?id=vyflgpwfJW"
+            >Majumder et al., 2025</a
+          >), since most tasks in this scientific discovery paradigm are
+          fundamentally optimization problems with respect to the given
+          dataset(s). Here, we extend our efforts in building coding agents for
+          data-driven discovery (<a
+            href="https://openreview.net/forum?id=6z4YKr0GK6"
+            >Chen et al., 2025</a
+          >;
+          <a href="https://aclanthology.org/2025.emnlp-main.1546/"
+            >Li et al., 2025</a
+          >; <a href="https://arxiv.org/abs/2604.27977">Moussa et al., 2026</a>)
+          and present four case studies to demonstrate how AutoResearch can
+          benefit subject matter experts in their data-driven research tasks.
+        </p>
+        <h2 id="2-experimental-setup">2 Experimental Setup</h2>
+        <h3 id="21-adaptation-of-autoresearch">
+          2.1 Adaptation of AutoResearch
+        </h3>
+        <p>
+          Our implementation (<a
+            href="https://github.com/OSU-NLP-Group/autoresearch-sab"
+            >available on GitHub</a
+          >) mostly follows AutoResearch to construct a simple harness, with two
+          changes to improve its reliability:
+        </p>
+        <ul>
+          <li>
+            A <code>data/</code> folder to put the datasets for each task.
+          </li>
+          <li>
+            A <code>loop.py</code> file as the entry point that starts the
+            AutoResearch loop for users.
+            <ul>
+              <li>
+                <span class="underline">Change 1</span>: In our preliminary
+                experiments, we find that Codex is designed to be interactive
+                and always pauses to interact with the user after running 10-15
+                minutes. So, we implemented the <code>/loop</code> command of
+                Claude Code using Codex CLI to keep the agent running until
+                finishing all experiments.
+              </li>
+            </ul>
+          </li>
+          <li>
+            A <code>problem.md</code> file with instructions and rules for the
+            agent.
+            <ul>
+              <li>
+                <span class="underline">Change 2</span>: With
+                <code>loop.py</code> , the agent now completes only one run per
+                session, instead of accumulating multiple runs in one session.
+                While this controls context window length, the agent’s past
+                experience do not transfer across sessions. Thus, we explicitly
+                instruct the agent to use <code>result.tsv</code> as its memory
+                and always read the file to learn about its past attempts before
+                making any new code changes.
+              </li>
+            </ul>
+          </li>
+          <li>
+            A task-specific <code>evaluation.py</code> file that implements the
+            optimization objective for verification.
+          </li>
+        </ul>
+        <p>
+          For all experiments, we use Codex with GPT-5.4 (reasoning effort:
+          medium) to execute 40 AutoResearch iterations, where the first run
+          creates a baseline solution from scratch and the remaining 39 runs
+          attempt to improve it according to the evaluation feedback.
+        </p>
+        <h3 id="22-datasets-and-tasks">2.2 Datasets and Tasks</h3>
+        <p>
+          We run this adapted implementation of AutoResearch on 4 data-driven
+          discovery tasks selected from ScienceAgentBench (<a
+            href="https://openreview.net/forum?id=6z4YKr0GK6"
+            >Chen et al., 2025</a
+          >) and D3-Gym (<a href="https://arxiv.org/abs/2604.27977"
+            >Moussa et al., 2026</a
+          >), one for each involved discipline: Bioinformatics, Cognitive
+          Neuroscience, Geographical Information Science, and Computational
+          Chemistry.
+        </p>
+        <ul>
+          <li>
+            <em>Drug Activity Classification against HIV</em>: A Bioinformatics
+            task in ScienceAgentBench that develops a property prediction model
+            to predict the activity of drugs against HIV.
+          </li>
+          <li>
+            <em>Neural Network Training for EEG Signal Mapping</em>: A Cognitive
+            Neuroscience task in ScienceAgentBench that trains a neural network
+            to learn the mapping of neural representations in EEG signals from
+            one subject to another.
+          </li>
+          <li>
+            <em>Spatial Interpolation of German Temperature Data</em>: A
+            Geographical Information Science task in D3-Gym that performs
+            spatial interpolation of DWD weather station temperature
+            observations across Germany.
+          </li>
+          <li>
+            <em>Molecular Property Prediction with ChebyNet GNN</em>: A
+            Computational Chemistry task in D3-Gym that trains a Chebyshev graph
+            neural network to predict 12 quantum-mechanical molecular
+            properties.
+          </li>
+        </ul>
+        <p>
+          A key distinction between ScienceAgentBench and D3-Gym tasks is how
+          their environments are constructed. In ScienceAgentBench, we manually
+          annotated task instructions, gold programs, and evaluation scripts,
+          whereas D3-Gym uses an automatic pipeline to synthesize all these
+          three components. Especially, we want to investigate how reliable the
+          synthesized evaluation scripts in D3-Gym are, and whether we can use
+          coding agents for both solution generation and objective verification
+          to ensemble a fully autonomous research loop.
+        </p>
+        <h2 id="3-results-on-scienceagentbench">
+          3 Results on ScienceAgentBench
+        </h2>
+        <p>
+          For the first two case studies on ScienceAgentBench tasks, our setting
+          is aligned with the original AutoResearch design: Human researcher
+          prepares the verifiable environment, including the evaluation script
+          for verification, so that the agent receives reliable feedback for
+          iterative improvement over multiple sessions.
+        </p>
+        <h3 id="31-drug-activity-classification-against-hiv">
+          3.1 Drug Activity Classification against HIV
+        </h3>
+        <figure>
+          <a href="img/autoresearch-sab/progress_hiv_new.png"
+            ><img
+              alt="AutoResearch results of drug activity classification against HIV."
+              loading="lazy"
+              src="img/autoresearch-sab/progress_hiv_new.png"
+          /></a>
+          <figcaption>
+            AutoResearch results of drug activity classification against HIV.
+            Click to enlarge the figure.
+          </figcaption>
+        </figure>
+        <p>
+          Given the F1 score as feedback, AutoResearch acts as an ML engineer in
+          the drug activity classification task. It performs heavy feature
+          engineering to represent the drug molecules, pushing the F1 score from
+          below 0.34 to 0.52. There are no meaningful changes to the baseline
+          logistic regression model or other components in the training loop.
+          Actually, this observation aligns with the agent’s behavior in the LM
+          training task, where it mostly tunes hyper-parameters without
+          modifying the transformer or optimizer architecture. While not
+          performing data-driven “research” per se, such an autonomous ML
+          engineer is still appreciated and useful, especially for subject
+          matter experts who have minimal knowledge in programming and machine
+          learning.
+        </p>
+        <h3 id="32-neural-network-training-for-eeg-signal-mapping">
+          3.2 Neural Network Training for EEG Signal Mapping
+        </h3>
+        <figure>
+          <a href="img/autoresearch-sab/progress_eeg_new.png"
+            ><img
+              alt="AutoResearch results of neural network training for EEG signal mapping."
+              loading="lazy"
+              src="img/autoresearch-sab/progress_eeg_new.png"
+          /></a>
+          <figcaption>
+            AutoResearch results of neural network training for EEG signal
+            mapping. Click to enlarge the figure.
+          </figcaption>
+        </figure>
+        <p>
+          AutoResearch further demonstrates a research-like trajectory in the
+          EEG signal mapping task. Starting with a simple multi-layer perceptron
+          (MLP) baseline, it first adds residual connections to make the neural
+          network deeper, introduces convolution and pooling layers to better
+          capture EEG patterns, and finally tweaks hyper-parameters, such as
+          batch sizes and convolution channels, to maximize performance. While
+          there is some contamination risk, these behaviors are quite close to
+          those of a human researcher, suggesting the potential of AutoResearch
+          beyond merely feature engineering and hyper-parameter tuning.
+        </p>
+        <p>
+          Additionally, in our prior evaluation, all models and agents failed to
+          “solve” this task within one session and underperforms the success
+          threshold, similar to the baseline here. By formulating the task as an
+          optimization problem and allowing agents to iteratively improve, they
+          can now successfully outperform the threshold (without knowing the
+          value) by a decent margin, showing their full potential in addressing
+          data-driven discovery tasks.
+        </p>
+        <h2 id="4-results-on-d3-gym">4 Results on D3-Gym</h2>
+        <p>
+          While AutoResearch works well with manually crafted evaluation scripts
+          and environments, human annotation for every data-driven discovery
+          tasks can be very costly and thus not scalable. Our recent work,
+          D3-Gym, fills this gap with a fully automated pipeline that constructs
+          verifiable environments for scientific data-driven discovery.
+          Consequently, a natural question to ask is how reliable these
+          synthetic environments and verifiers are in providing feedback for
+          AutoResearch. In the following two case studies, we show that
+          evaluation scripts synthesized in D3-Gym can already provide
+          meaningful guidance to optimize the solutions in the right direction.
+        </p>
+        <h3 id="41-spatial-interpolation-of-german-temperature-data">
+          4.1 Spatial Interpolation of German Temperature Data
+        </h3>
+        <figure>
+          <a href="img/autoresearch-sab/progress_temp.png"
+            ><img
+              alt="AutoResearch results of spatial interpolation of German temperature data."
+              loading="lazy"
+              src="img/autoresearch-sab/progress_temp.png"
+          /></a>
+          <figcaption>
+            AutoResearch results of spatial interpolation of German temperature
+            data. Click to enlarge the figure.
+          </figcaption>
+        </figure>
+        <p>
+          The spatial interpolation task appears to be a simple one, since its
+          baseline already outperforms the threshold (RMSE ≤ 1.5) specified
+          during automatic evaluation script generation. Similar to the drug
+          activity classification task, AutoResearch only does feature
+          engineering to improve the spherical variogram model and use Universal
+          Kriging to interpolate temperature values. This result suggest that:
+        </p>
+        <ol>
+          <li>
+            For simpler data-driven discovery tasks, LLM-based automatic
+            pipelines, as adopted in D3-Gym, can generate reliable evaluation
+            scripts by picking an appropriate metric to optimize and
+            implementing the correct evaluation logic.
+          </li>
+          <li>
+            Although the threshold selected might be too forgiving to evaluate
+            task success, in practice, by formulating that task as an
+            optimization problem and mask out the threshold, we can still run
+            AutoResearch to iteratively improve the solution for better results.
+          </li>
+        </ol>
+        <h3 id="42-molecular-property-prediction-with-chebynet-gnn">
+          4.2 Molecular Property Prediction with ChebyNet GNN
+        </h3>
+        <figure>
+          <a href="img/autoresearch-sab/progress_chebynet.png"
+            ><img
+              alt="AutoResearch results of molecular property prediction with ChebyNet GNN."
+              loading="lazy"
+              src="img/autoresearch-sab/progress_chebynet.png"
+          /></a>
+          <figcaption>
+            AutoResearch results of molecular property prediction with ChebyNet
+            GNN. Click to enlarge the figure.
+          </figcaption>
+        </figure>
+        <p>
+          In this task, AutoResearch is trying various ideas to achieve lower
+          MAE, including modifying the GNN architecture and using a
+          property-weighted loss. These changes lead to some meaningful
+          improvements in the first 10 iterations, but the performance then
+          saturates in the remaining runs and fails to beat the success
+          threshold eventually. After taking a closer look, we find that
+          AutoResearch is making things overcomplicated. Because the training
+          dataset is small, the gold program trains a very small model with only
+          one epoch. In contrast, AutoResearch trains a much larger model with
+          &gt;200 epochs, thus overfitting the training set severely. Since this
+          issue is not recognized and fixed, the performance saturates and do
+          not improve in later turns.
+        </p>
+        <p>
+          Additionally, we notice that the synthesized evaluation script is
+          slightly off in this task: instead of evaluating against the
+          ground-truth values in the test set, the script uses the gold
+          program’s predictions, which has a 0.83 MAE compared to ground-truth
+          values. Correspondingly, we have attempted to correct the evaluation
+          script to use ground-truth values, but it leads to a similar result.
+          This observation suggest that AutoResearch may also work reasonably
+          when optimizing toward some local optima, as long as it provides the
+          correct optimization direction.
+        </p>
+        <h2 id="5-reward-hacking">5 Reward Hacking</h2>
+        <p>
+          Similar to other reports (<a
+            href="https://x.com/hhexiy/status/2036619809975308344?s=20"
+            >He, 2026</a
+          >;
+          <a href="https://arxiv.org/abs/2603.24511">Panfilov et al., 2026</a>),
+          we have also encountered reward hacking issues when running
+          AutoResearch on two tasks: EEG signal mapping and molecular property
+          prediction.
+        </p>
+        <p>
+          In the EEG signal mapping task, the agent “overfits” how the outcome
+          is evaluated and directly implements a linear algebra solver,
+          completely ignoring the instruction where the first four words are
+          “train a neural network.” To mitigate this issue, we added the
+          following instruction to the <code>problem.md</code> file, which
+          prevents it from happening again:
+        </p>
+        <blockquote>
+          <strong
+            >DO NOT use any linear algebra solver. You must implement an actual
+            neural network, run the training loop, and then use the optimized
+            weights to make predictions on the test set.</strong
+          >
+        </blockquote>
+        <p>
+          In the molecular property prediction task, we first find that the
+          agent will take a shortcut by directly loading and copying gold
+          answers from the test set. Interestingly, it is not even hiding this
+          cheating behavior and directly logged “copy test.pt y into submission
+          output” with 0.83 MAE (difference between gold program predictions and
+          ground truth values). This behavior is not unexpected: In
+          ScienceAgentBench, we have already identified this issue and proposed
+          to mitigate it by manually replace the gold labels with some
+          impossible “null” values. However, the automated pipeline in D3-Gym
+          overlooks this issue and leaves the test set as is. Thus, we apply the
+          same strategy from ScienceAgentBench and change all gold labels to
+          -1000.0.
+        </p>
+        <p>
+          Nonetheless, even after this modification, AutoResearch was able to
+          find a new way of reward hacking. Since the property prediction values
+          are zero-centered, after a few attempts that fail to improve the MAE,
+          the agent will put 0.0 for every molecule and every property. This
+          shortcut is also logged as “constant zero predictions with fixed
+          gdb_idx” with only 0.25 MAE, and AutoResearch drifts its goal from
+          here by playing with this hacking strategy, e.g., “node-count
+          heuristic for property_0, others zero.” As a solution, we again added
+          the following instruction to the <code>problem.md</code> file, so that
+          the agent finally focuses on actual GNN training:
+        </p>
+        <blockquote>
+          <strong
+            >You must always implement an actual graph neural network, run the
+            training loop, and then use the optimized weights to make
+            predictions on the test set. DO NOT play with the test set by making
+            some constant or heuristic prediction.</strong
+          >
+        </blockquote>
+        <h2 id="6-takeaways">6 Takeaways</h2>
+        <ul>
+          <li>
+            AutoResearch can turn coding agents into powerful research
+            assistants for data-driven discovery when the task is properly
+            formulated as an optimization problem with a reliable verifier that
+            evaluates the optimization objective.
+          </li>
+          <li>
+            Our case studies show that AutoResearch already starts to exhibit
+            some research-like behaviors, such as incrementally building up an
+            effective neural network for a given dataset.
+          </li>
+          <li>
+            However, AutoResearch can also overlook some simple problems that
+            human researchers could quickly figure out, such as overfitting.
+          </li>
+          <li>
+            Finally, reward hacking is a widely-reported serious issue when
+            running AutoResearch, highlighting an open challenge for future
+            research.
+          </li>
+        </ul>
+        <aside class="callout">
+          <div class="callout-icon">💡</div>
+          <div>
+            <p>
+              <strong
+                >Therefore, coding agents with AutoResearch should be best
+                considered as “AI co-scientists” that requires humans in the
+                loop to give feedback, verify results, and monitor reward
+                hacking.</strong
+              >
+            </p>
+          </div>
+        </aside>
+        <h2 id="7-citation">7 Citation</h2>
+        <p>
+          If you find our insights useful in your work, please cite this blog as
+          follows:
+        </p>
+        <pre><code class="language-latex">@misc{chen2026autoresearchsab,
+  title        = {AutoResearch Meets Real-World Data-Driven Discovery},
+  author       = {Ziru Chen and Hanane Nour Moussa and Yifei Li and Huan Sun},
+  year         = {2026},
+  howpublished = {\url{https://ronch99.github.io/autoresearch-sab.html}},
+  note         = {Blog post}
+}</code></pre>
+      </article>
+    </main>
+
+    <div class="image-lightbox" id="image-lightbox">
+      <img id="image-lightbox-img" alt="" />
+      <div class="image-lightbox-caption" id="image-lightbox-caption"></div>
+    </div>
+
+    <script>
+      const lightbox = document.getElementById("image-lightbox");
+      const lightboxImg = document.getElementById("image-lightbox-img");
+      const lightboxCaption = document.getElementById("image-lightbox-caption");
+
+      document.querySelectorAll("article figure img").forEach((img) => {
+        img.addEventListener("click", (event) => {
+          event.preventDefault();
+
+          lightboxImg.src = img.src;
+          lightboxImg.alt = img.alt || "";
+
+          const caption = img.closest("figure")?.querySelector("figcaption");
+          lightboxCaption.textContent = caption ? caption.textContent : "";
+
+          lightbox.classList.add("open");
+        });
+      });
+
+      lightbox.addEventListener("click", () => {
+        lightbox.classList.remove("open");
+        lightboxImg.src = "";
+        lightboxCaption.textContent = "";
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          lightbox.classList.remove("open");
+          lightboxImg.src = "";
+          lightboxCaption.textContent = "";
+        }
+      });
+    </script>
+  </body>
+</html>
