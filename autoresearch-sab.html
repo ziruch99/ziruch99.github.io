@@ -509,6 +509,26 @@
           coding agents for both solution generation and objective verification
           to ensemble a fully autonomous research loop.
         </p>
+        <h3 id="23-limitation">2.3 Limitation</h3>
+        <p>
+          We consider that AutoResearch works like a "benchmaxxing" researcher
+          here: given the training and validation datasets, the agent
+          iteratively improves its solution to achieve better performance on the
+          test set. Just like in real-world leaderboards, the agent only
+          receives the evaluation scores as feedback, and gold labels in the
+          test set are not available for the agent to directly evaluate its
+          performance. This setting is a bit more realistic than the original
+          AutoResearch design, since we are not only just improving validation
+          set performance but also optimizing the test set as a black-box
+          optimization objective. However, we note that this setting is still
+          idealized for data-driven discovery, since leaderboards prohibit
+          frequent submissions, while the agent here can submit as many times as
+          it wants. As a future direction, we need to first mitigate the reward
+          hacking issues (<a href="#5-reward-hacking">Section 5</a>) so that the
+          agent is making generalizable improvements rather than just
+          overfitting on the validation set, and then constrain the number of
+          test set submissions to make the setting more realistic.
+        </p>
         <h2 id="3-results-on-scienceagentbench">
           3 Results on ScienceAgentBench
         </h2>
@@ -588,7 +608,9 @@
           While AutoResearch works well with manually crafted evaluation scripts
           and environments, human annotation for every data-driven discovery
           tasks can be very costly and thus not scalable. Our recent work,
-          D3-Gym, fills this gap with a fully automated pipeline that constructs
+          D3-Gym (<a href="https://arxiv.org/abs/2604.27977"
+            >Moussa et al., 2026</a
+          >), fills this gap with a fully automated pipeline that constructs
           verifiable environments for scientific data-driven discovery.
           Consequently, a natural question to ask is how reliable these
           synthetic environments and verifiers are in providing feedback for
